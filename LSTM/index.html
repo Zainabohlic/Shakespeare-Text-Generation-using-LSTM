@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Word Predictor</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+          
+            font-family: 'Roboto', sans-serif;
+            background-color: black;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-top: 100px;
+            margin-bottom: 0;
+            color: #f0f0f0;
+            font-size: 45px;
+        }
+        h2 {
+         
+            font-size: 30px;
+            color: #566b81;
+        }
+
+        textarea {
+            width: 100%;
+            background-color: #524b51;
+            max-width: 600px;
+            height: 100px;
+            padding: 10px;
+            border: 2px solid white;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: white;
+            resize: none;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            color: white;
+            background-color: #524b51;
+            border: 2px solid white;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 150px;
+        }
+
+        button {
+            background-color: #566b81;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #566b81;
+        }
+
+        h3 {
+            margin-top: 30px;
+            color: white;
+        }
+
+        #suggestions {
+            width: 40%;
+            max-width: 600px;
+            background: #524b51;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            border: 1px solid white;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #suggestions p {
+            margin: 5px 0;
+            padding: 10px;
+            border: 2px solid #566b81;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        #suggestions p:hover {
+            background-color: #566b81;
+        }
+    </style>
+</head>
+<body>
+    <h1>Next Word Predictor</h1>
+    <h2> Shakespeare's Play</h2>
+    <textarea id="seed_text" placeholder="Type your sentence here..."></textarea>
+    <input type="number" id="next_words" min="1" value="1" placeholder="Number of words to predict" />
+    <button id="predict">Predict Next Words</button>
+    <h3>Suggestions:</h3>
+    <div id="suggestions"></div>
+
+    <script>
+        $('#predict').click(function() {
+            const seedText = $('#seed_text').val();
+            const nextWords = $('#next_words').val();
+            $.ajax({
+                type: 'POST',
+                url: 'http://127.0.0.1:5000/predict',
+                contentType: 'application/json',
+                data: JSON.stringify({ 
+                    seed_text: seedText, 
+                    next_words: nextWords 
+                }),
+                success: function(data) {
+                    $('#suggestions').empty();
+                    data.next_word_options.forEach(function(option) {
+                        $('#suggestions').append(`<p>${option}</p>`);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
